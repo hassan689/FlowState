@@ -1,13 +1,19 @@
-from uuid import UUID
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.models.interaction import InteractionLog
 from app.schemas.interaction import InteractionLogCreate, InteractionLogResponse
+from app.services.interactions_service import (
+    create_interaction as create_interaction_service,
+)
+from app.services.interactions_service import (
+    get_user_patterns as get_user_patterns_service,
+)
+from app.services.interactions_service import (
+    list_interactions as list_interactions_service,
+)
 
 router = APIRouter()
 
@@ -18,20 +24,7 @@ async def create_interaction(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    from datetime import datetime, timezone
-    log = InteractionLog(
-        user_id=current_user.id,
-        session_id=body.session_id,
-        event_type=body.event_type,
-        metadata_=body.metadata,
-        page_url=body.page_url,
-        element_id=body.element_id,
-        time_spent_ms=body.time_spent_ms,
-    )
-    db.add(log)
-    await db.commit()
-    await db.refresh(log)
-    return log
+    return await create_interaction_service(db=db, current_user=current_user, body=body)
 
 
 @router.get("", response_model=list[InteractionLogResponse])
@@ -40,15 +33,7 @@ async def list_interactions(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    from sqlalchemy import desc
-    stmt = (
-        select(InteractionLog)
-        .where(InteractionLog.user_id == current_user.id)
-        .order_by(desc(InteractionLog.timestamp))
-        .limit(limit)
-    )
-    result = await db.execute(stmt)
-    return list(result.scalars().all())
+    return await list_interactions_service(db=db, current_user=current_user, limit=limit)
 
 
 @router.get("/patterns")
@@ -56,11 +41,4 @@ async def get_user_patterns(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    from sqlalchemy import func
-    stmt = (
-        select(InteractionLog.event_type, func.count(InteractionLog.id).label("cnt"))
-        .where(InteractionLog.user_id == current_user.id)
-        .group_by(InteractionLog.event_type)
-    )
-    result = await db.execute(stmt)
-    return [{"event_type": r[0], "count": r[1]} for r in result.all()]
+    return await get_user_patterns_service(db=db, current_user=current_user)
