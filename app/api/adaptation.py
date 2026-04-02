@@ -1,13 +1,19 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.models.adaptive_rule import AdaptiveRule
-from app.models.progress_tracker import ProgressTracker
 from app.schemas.adaptation import AdaptiveRuleResponse, ProgressTrackerResponse
+from app.services.adaptation_service import (
+    get_my_progress as get_my_progress_service,
+)
+from app.services.adaptation_service import (
+    get_productivity_score as get_productivity_score_service,
+)
+from app.services.adaptation_service import (
+    list_adaptive_rules as list_adaptive_rules_service,
+)
 
 router = APIRouter()
 
@@ -18,11 +24,8 @@ async def list_adaptive_rules(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    stmt = select(AdaptiveRule).order_by(AdaptiveRule.priority.desc())
-    if active_only:
-        stmt = stmt.where(AdaptiveRule.is_active == True)
-    result = await db.execute(stmt)
-    return list(result.scalars().all())
+    # Delegates DB querying to a service so routers stay thin.
+    return await list_adaptive_rules_service(db=db, active_only=active_only)
 
 
 @router.get("/progress", response_model=ProgressTrackerResponse)
@@ -30,14 +33,7 @@ async def get_my_progress(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(ProgressTracker).where(ProgressTracker.user_id == current_user.id))
-    pt = result.scalar_one_or_none()
-    if not pt:
-        pt = ProgressTracker(user_id=current_user.id)
-        db.add(pt)
-        await db.commit()
-        await db.refresh(pt)
-    return pt
+    return await get_my_progress_service(db=db, current_user=current_user)
 
 
 @router.get("/productivity-score")
@@ -45,5 +41,5 @@ async def get_productivity_score(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    score = await current_user.get_productivity_score(db)
+    score = await get_productivity_score_service(db=db, current_user=current_user)
     return {"productivity_score": score}
