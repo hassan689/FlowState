@@ -1,0 +1,216 @@
+.create-task-page {
+  max-width: 800px; /* Kept concise since it's a form view */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-card {
+  padding: 32px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.card-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.required {
+  color: var(--error-color);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: #F9FAFB;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  background: white;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-row {
+  display: flex;
+  gap: 24px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  appearance: none;
+  padding-left: 36px;
+}
+
+.priority-dot {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.priority-dot.medium {
+  background-color: #F59E0B;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  padding-left: 44px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.tags-input-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.add-tag-btn {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.add-tag-btn:hover {
+  background: #F3F4F6;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.full-width {
+  flex: 2;
+  justify-content: center;
+}
+
+.btn-outline {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+.btn-outline:hover {
+  background: #F9FAFB;
+}
+
+.tips-card {
+  background-color: #EFF6FF;
+  border: 1px solid #DBEAFE;
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.tips-card .card-header h2 {
+  color: #1E40AF;
+}
+
+.tips-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tips-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14px;
+  color: #1E40AF;
+  line-height: 1.5;
+}
+
+.tips-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #3B82F6;
+  font-weight: bold;
+}
