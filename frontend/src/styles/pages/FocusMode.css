@@ -1,0 +1,177 @@
+.focus-mode-page {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.focus-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.icon-wrapper {
+  background-color: var(--primary-color);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.focus-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.focus-header p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.focus-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Timer Card */
+.timer-card {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.timer-progress-bar {
+  height: 8px;
+  background: linear-gradient(90deg, #3B82F6 0%, #1D4ED8 100%);
+  width: 100%;
+}
+
+.timer-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+}
+
+.time-text {
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1;
+  margin-bottom: 16px;
+  letter-spacing: -2px;
+}
+
+.timer-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+
+.btn-start-focus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #8D8D99;
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+
+.btn-start-focus:hover {
+  background-color: #71717A;
+}
+
+/* Tasks Completed Card */
+.tasks-completed-card {
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.completed-icon-wrapper {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.completed-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 5px solid #10B981;
+}
+
+.tasks-completed-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tasks-completed-card p {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* Focus Tips Card */
+.focus-tips-card {
+  background-color: #F0F4FF;
+  border: 1px solid #D1E0FF;
+  border-radius: var(--radius-md);
+  padding: 32px;
+}
+
+.focus-tips-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1E3A8A;
+  margin-bottom: 16px;
+}
+
+.tips-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tips-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14px;
+  color: #2563EB;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.tips-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #3B82F6;
+  font-weight: bold;
+}
