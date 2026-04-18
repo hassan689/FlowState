@@ -1,0 +1,265 @@
+.voice-assistant-page {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 48px;
+}
+
+.voice-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.voice-header .header-icon-wrapper {
+  margin-bottom: 16px;
+}
+
+.voice-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.voice-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.voice-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.demo-banner {
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background-color: #EFF6FF;
+  border: 1px solid #BFDBFE;
+}
+
+.demo-banner .status-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.demo-banner h3 {
+  font-size: 14px;
+  color: #1E40AF;
+  margin-bottom: 4px;
+}
+
+.demo-banner p {
+  font-size: 13px;
+  color: #2563EB;
+}
+
+.tap-to-speak-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.large-mic-btn {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+  margin-bottom: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.large-mic-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
+}
+
+.tap-to-speak-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tap-to-speak-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.commands-card {
+  padding: 24px;
+}
+
+.commands-card .section-title-wrapper {
+  margin-bottom: 20px;
+}
+
+.commands-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.commands-card > p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.commands-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.command-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #F9FAFB;
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: var(--radius-md);
+}
+
+.cmd-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cmd-text h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.cmd-text p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.features-card {
+  padding: 24px;
+}
+
+.features-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.feature-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.feature-text h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.feature-text p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.accessibility-first-card {
+  background-color: #ECFDF5; /* Light green */
+  border: 1px solid #D1FAE5;
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.acc-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.acc-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.acc-desc {
+  font-size: 13px;
+  color: #047857;
+  margin-bottom: 12px;
+}
+
+.acc-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.acc-list li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 13px;
+  color: #047857;
+}
+
+.acc-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #10B981;
+  font-weight: bold;
+}
+
+.footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.footer-actions p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.footer-actions .btn-outline {
+  padding: 10px 24px;
+}
