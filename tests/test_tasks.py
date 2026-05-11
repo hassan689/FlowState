@@ -34,3 +34,30 @@ async def test_list_tasks(client: AsyncClient, test_user: User):
     )
     assert r.status_code == 200
     assert isinstance(r.json(), list)
+
+
+@pytest.mark.asyncio
+async def test_mark_task_done_updates_progress(client: AsyncClient, test_user: User):
+    token = create_access_token(test_user.id)
+    created = await client.post(
+        "/api/tasks",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"title": "T1", "category": "Assignment"},
+    )
+    assert created.status_code == 201
+    task_id = created.json()["id"]
+
+    updated = await client.patch(
+        f"/api/tasks/{task_id}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"status": "Done"},
+    )
+    assert updated.status_code == 200
+    assert updated.json()["status"] == "Done"
+
+    prog = await client.get(
+        "/api/adaptation/progress",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert prog.status_code == 200
+    assert prog.json()["tasks_completed"] >= 1

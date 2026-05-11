@@ -3,7 +3,7 @@ from app.core.config import settings
 
 celery_app = Celery(
     "mass",
-    broker=settings.CELERY_BROKER_URL, #skibidi hassan khan
+    broker=settings.CELERY_BROKER_URL,
     backend=settings.REDIS_URL,
     include=["app.worker.tasks"],
 )

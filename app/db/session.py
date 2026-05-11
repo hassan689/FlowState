@@ -1,6 +1,6 @@
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from app.core.config import settings
-from app.db.base import Base
 
 engine = create_async_engine(
     settings.DATABASE_URL,
@@ -20,8 +20,13 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    """
+    Ensure the database is reachable.
+
+    Schema management is handled via Alembic migrations (see `alembic/`).
+    """
+    async with engine.connect() as conn:
+        await conn.execute(text("SELECT 1"))
 
 
 async def get_db():

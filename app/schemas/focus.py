@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import UUID
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class FocusSessionCreate(BaseModel):
@@ -10,7 +10,7 @@ class FocusSessionCreate(BaseModel):
 class FocusSessionUpdate(BaseModel):
     end_time: datetime | None = None
     completed: bool | None = None
-    interruptions: int | None = None
+    interruptions: int | None = Field(default=None, ge=0)
     notes: str | None = None
 
 
@@ -25,5 +25,4 @@ class FocusSessionResponse(BaseModel):
     interruptions: int
     notes: str | None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

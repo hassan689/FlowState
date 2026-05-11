@@ -2,19 +2,20 @@ from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel
 
+from app.schemas.enums import AdaptiveTriggerType
+
 
 class AdaptiveRuleResponse(BaseModel):
     id: UUID
     rule_name: str
-    trigger_type: str
+    trigger_type: AdaptiveTriggerType
     threshold_value: float
     threshold_unit: str | None
     action_type: dict
     is_active: bool
     priority: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class ProgressTrackerResponse(BaseModel):
@@ -27,5 +28,4 @@ class ProgressTrackerResponse(BaseModel):
     tasks_completed: int
     last_calculated: datetime | None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

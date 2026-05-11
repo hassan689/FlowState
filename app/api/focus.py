@@ -9,6 +9,7 @@ from app.db.session import get_db
 from app.models.user import User
 from app.models.focus_session import FocusSession
 from app.schemas.focus import FocusSessionCreate, FocusSessionUpdate, FocusSessionResponse
+from app.services.recalculation import recompute_progress_tracker_for_user
 
 router = APIRouter()
 
@@ -98,4 +99,6 @@ async def end_focus_session(
         session.notes = body.notes
     await db.commit()
     await db.refresh(session)
+    if session.completed:
+        await recompute_progress_tracker_for_user(db, current_user.id)
     return session

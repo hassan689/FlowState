@@ -6,21 +6,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.models.task import Task, TaskStatus
+from app.models.task import Task
+from app.schemas.enums import TaskStatus
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.services.recalculation import recompute_progress_tracker_for_user
 
 router = APIRouter()
 
 
 @router.get("", response_model=list[TaskResponse])
 async def list_tasks(
-    status_filter: str | None = Query(None, alias="status"),
+    status_filter: TaskStatus | None = Query(None, alias="status"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     stmt = select(Task).where(Task.user_id == current_user.id).order_by(Task.order_index, Task.deadline)
     if status_filter:
-        stmt = stmt.where(Task.status == status_filter)
+        stmt = stmt.where(Task.status == status_filter.value)
     result = await db.execute(stmt)
     return list(result.scalars().all())
 
@@ -36,10 +38,10 @@ async def create_task(
         title=body.title,
         description=body.description,
         deadline=body.deadline,
-        category=body.category,
+        category=body.category.value,
         estimated_effort=body.estimated_effort,
         order_index=body.order_index,
-        tags=body.tags or [],
+        tags=body.tags,
     )
     task.compute_priority_score()
     db.add(task)
@@ -87,9 +89,11 @@ async def update_task(
     if body.deadline is not None:
         task.deadline = body.deadline
     if body.category is not None:
-        task.category = body.category
+        task.category = body.category.value
+    status_changed_to_done = False
     if body.status is not None:
-        task.update_status(body.status)
+        task.update_status(body.status.value)
+        status_changed_to_done = body.status == TaskStatus.DONE
     if body.estimated_effort is not None:
         task.estimated_effort = body.estimated_effort
     if body.actual_time_spent is not None:
@@ -101,6 +105,8 @@ async def update_task(
     task.compute_priority_score()
     await db.commit()
     await db.refresh(task)
+    if status_changed_to_done:
+        await recompute_progress_tracker_for_user(db, current_user.id)
     return task
 
 

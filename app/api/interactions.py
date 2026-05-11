@@ -18,11 +18,10 @@ async def create_interaction(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    from datetime import datetime, timezone
     log = InteractionLog(
         user_id=current_user.id,
         session_id=body.session_id,
-        event_type=body.event_type,
+        event_type=body.event_type.value,
         metadata_=body.metadata,
         page_url=body.page_url,
         element_id=body.element_id,

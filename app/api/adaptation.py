@@ -8,6 +8,7 @@ from app.models.user import User
 from app.models.adaptive_rule import AdaptiveRule
 from app.models.progress_tracker import ProgressTracker
 from app.schemas.adaptation import AdaptiveRuleResponse, ProgressTrackerResponse
+from app.services.recalculation import recompute_progress_tracker_for_user
 
 router = APIRouter()
 
@@ -30,14 +31,7 @@ async def get_my_progress(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(ProgressTracker).where(ProgressTracker.user_id == current_user.id))
-    pt = result.scalar_one_or_none()
-    if not pt:
-        pt = ProgressTracker(user_id=current_user.id)
-        db.add(pt)
-        await db.commit()
-        await db.refresh(pt)
-    return pt
+    return await recompute_progress_tracker_for_user(db, current_user.id)
 
 
 @router.get("/productivity-score")
