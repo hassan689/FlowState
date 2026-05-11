@@ -65,6 +65,7 @@ Flowstate/
    pip install -r requirements.txt
    alembic upgrade head
    ```
+   - Note: the API startup does not auto-create tables; migrations are the source of truth.
 
 5. **Run**
    ```bash
