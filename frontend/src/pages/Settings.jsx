@@ -1,8 +1,55 @@
-import React from 'react';
-import { Settings as SettingsIcon, CheckCircle2, Eye, Type, Palette, Zap, Mic, LayoutTemplate, Info } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  Settings as SettingsIcon,
+  User,
+  Palette,
+  Zap,
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../api/client';
 import '../styles/pages/Settings.css';
 
-const Settings = () => {
+export default function Settings() {
+  const { user, refreshUser } = useAuth();
+  const [name, setName] = useState('');
+  const [theme, setTheme] = useState('light');
+  const [focusDefault, setFocusDefault] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    setName(user.name || '');
+    const p = user.study_preferences || {};
+    setTheme(p.theme || 'light');
+    setFocusDefault(Boolean(p.focus_mode_default));
+  }, [user]);
+
+  const saveProfile = async (e) => {
+    e.preventDefault();
+    setMsg('');
+    setLoading(true);
+    try {
+      const study_preferences = {
+        ...(user?.study_preferences || {}),
+        theme,
+        focus_mode_default: focusDefault,
+      };
+      const res = await apiFetch('/api/users/me', {
+        method: 'PATCH',
+        body: { name, study_preferences },
+      });
+      if (!res.ok) throw new Error('Could not save profile');
+      await refreshUser();
+      document.documentElement.dataset.theme = theme;
+      setMsg('Saved.');
+    } catch (err) {
+      setMsg(err.message || 'Save failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="settings-page">
       <header className="page-header settings-header">
@@ -10,62 +57,60 @@ const Settings = () => {
           <SettingsIcon size={24} color="#ffffff" strokeWidth={2.5} />
         </div>
         <div>
-          <h1>Accessibility Settings</h1>
-          <p>Customize your experience for comfort and accessibility</p>
+          <h1>Profile & preferences</h1>
+          <p>These values drive the adaptive UI and defaults across devices.</p>
         </div>
       </header>
 
-      <div className="settings-content">
-        <div className="status-banner info-status">
-          <CheckCircle2 size={20} className="status-icon" color="#2563EB" />
-          <div className="status-text">
-            <h3>Accessibility Features Active</h3>
-            <p>No accessibility features currently enabled</p>
+      {msg && <p className="settings-banner">{msg}</p>}
+
+      <form className="settings-content" onSubmit={saveProfile}>
+        <section className="settings-section card">
+          <div className="section-header">
+            <User size={18} className="section-icon" />
+            <div className="section-title-wrapper">
+              <h2>Account</h2>
+              <p>Name and email from your Flowstate profile</p>
+            </div>
           </div>
-        </div>
+          <div className="settings-list">
+            <div className="setting-item column">
+              <label className="setting-label">Display name</label>
+              <input className="setting-input" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="setting-item column">
+              <label className="setting-label">Email</label>
+              <input className="setting-input" value={user?.email || ''} disabled />
+            </div>
+          </div>
+        </section>
 
         <section className="settings-section card">
           <div className="section-header">
-            <Eye size={18} className="section-icon" />
+            <Palette size={18} className="section-icon" />
             <div className="section-title-wrapper">
-              <h2>Visual Settings</h2>
-              <p>Adjust visual elements for better readability</p>
+              <h2>Study preferences</h2>
+              <p>Stored as JSON on the server (`study_preferences`)</p>
             </div>
           </div>
-          
           <div className="settings-list">
-            <div className="setting-item">
-              <div className="setting-icon"><Eye size={18} /></div>
-              <div className="setting-info">
-                <label>High Contrast</label>
-                <p>Increase contrast for better visibility</p>
-              </div>
-              <ToggleSwitch />
+            <div className="setting-item column">
+              <label className="setting-label">Theme</label>
+              <select className="setting-input" value={theme} onChange={(e) => setTheme(e.target.value)}>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="system">System</option>
+              </select>
             </div>
-
             <div className="setting-item">
-              <div className="setting-icon"><Type size={18} /></div>
               <div className="setting-info">
-                <label>Large Text</label>
-                <p>Increase text size throughout the app</p>
+                <label>Default focus mode entry</label>
+                <p>When enabled, the planner opens with fewer secondary controls.</p>
               </div>
-              <ToggleSwitch />
-            </div>
-
-            <div className="setting-item">
-              <div className="setting-icon"><Palette size={18} /></div>
-              <div className="setting-info">
-                <label>Color Blind Mode</label>
-                <p>Adjust colors for color vision deficiency</p>
-                <div className="setting-dropdown-wrapper">
-                  <select defaultValue="none" className="setting-dropdown">
-                    <option value="none">None</option>
-                    <option value="protanopia">Protanopia (Red-blind)</option>
-                    <option value="deuteranopia">Deuteranopia (Green-blind)</option>
-                    <option value="tritanopia">Tritanopia (Blue-blind)</option>
-                  </select>
-                </div>
-              </div>
+              <label className="toggle-switch">
+                <input type="checkbox" checked={focusDefault} onChange={(e) => setFocusDefault(e.target.checked)} />
+                <span className="slider" />
+              </label>
             </div>
           </div>
         </section>
@@ -74,80 +119,28 @@ const Settings = () => {
           <div className="section-header">
             <Zap size={18} className="section-icon pink-icon" />
             <div className="section-title-wrapper">
-              <h2>Motion & Interaction</h2>
-              <p>Control animations and interaction patterns</p>
+              <h2>Accessibility</h2>
+              <p>Visual toggles (local-first patterns can extend these fields)</p>
             </div>
           </div>
-          
           <div className="settings-list">
             <div className="setting-item">
-              <div className="setting-icon"><Zap size={18} /></div>
               <div className="setting-info">
-                <label>Reduced Motion</label>
-                <p>Minimize animations and transitions</p>
+                <label>Reduced motion</label>
+                <p>Minimize transitions for sensitive sessions</p>
               </div>
-              <ToggleSwitch />
-            </div>
-
-            <div className="setting-item">
-              <div className="setting-icon"><Mic size={18} /></div>
-              <div className="setting-info">
-                <label>Voice Assistance</label>
-                <p>Enable voice commands and feedback</p>
-                <span className="future-note">Note: Voice features are planned for future release</span>
-              </div>
-              <ToggleSwitch />
+              <label className="toggle-switch">
+                <input type="checkbox" readOnly />
+                <span className="slider" />
+              </label>
             </div>
           </div>
         </section>
 
-        <section className="settings-section card">
-          <div className="section-header">
-            <LayoutTemplate size={18} className="section-icon green-icon" />
-            <div className="section-title-wrapper">
-              <h2>Layout Settings</h2>
-              <p>Simplify the interface to reduce cognitive load</p>
-            </div>
-          </div>
-          
-          <div className="settings-list">
-            <div className="setting-item">
-              <div className="setting-icon"><LayoutTemplate size={18} /></div>
-              <div className="setting-info">
-                <label>Simplified Layout</label>
-                <p>Reduce visual complexity and clutter</p>
-              </div>
-              <ToggleSwitch />
-            </div>
-          </div>
-        </section>
-
-        <div className="about-accessibility-card">
-          <h3 className="about-title">About Accessibility</h3>
-          <p className="about-desc">
-            These settings are designed to make AdaptiveFlow more comfortable and usable for everyone, including users with visual, motor, or cognitive impairments.
-          </p>
-          <ul className="about-list">
-            <li>All settings are saved locally and persist across sessions</li>
-            <li>You can combine multiple settings for a customized experience</li>
-            <li>Changes take effect immediately without needing to refresh</li>
-            <li>These features are compliant with WCAG 2.1 Level AA guidelines</li>
-          </ul>
-        </div>
-
-        <button className="btn-reset-all">Reset All to Defaults</button>
-      </div>
+        <button type="submit" className="btn-primary btn settings-save" disabled={loading}>
+          {loading ? 'Saving…' : 'Save profile'}
+        </button>
+      </form>
     </div>
   );
-};
-
-const ToggleSwitch = ({ checked = false }) => {
-  return (
-    <label className="toggle-switch">
-      <input type="checkbox" defaultChecked={checked} />
-      <span className="slider"></span>
-    </label>
-  );
-};
-
-export default Settings;
+}

@@ -68,6 +68,15 @@ Ensure Redis is running (e.g. `redis-server` or Docker). Required for Celery and
 
 ## Testing
 
+Tests **only** run against **PostgreSQL** using **asyncpg** (same stack as the app). SQLite is not used.
+
+1. Create a database for tests (e.g. `flowstate_test`) and grant your user access.
+2. In `.env`, set either:
+   - **`TEST_DATABASE_URL`** (recommended): `postgresql+asyncpg://user:pass@host:5432/flowstate_test`  
+   - or **`DATABASE_URL`** if you do not set `TEST_DATABASE_URL` (tests will use that database and **drop all tables** before/after the test session — use a disposable DB).
+
+Each test module rebuilds schema via `metadata.drop_all` / `create_all` on that engine.
+
 - **Run all tests**
   ```bash
   pytest
@@ -82,8 +91,6 @@ Ensure Redis is running (e.g. `redis-server` or Docker). Required for Celery and
   ```bash
   pytest -v
   ```
-
-By default, tests use an in-memory SQLite DB. To run against PostgreSQL, set `TEST_DATABASE_URL` in `.env` (e.g. a separate test DB).
 
 ## Code Quality (optional but recommended)
 
@@ -119,7 +126,7 @@ Review the generated migration before committing.
 | `REDIS_URL` / `CACHE_URL` / `CELERY_BROKER_URL` | Redis URLs |
 | `JWT_ACCESS_LIFETIME_MINUTES` / `JWT_REFRESH_LIFETIME_DAYS` | Token expiry |
 | `CORS_ALLOWED_ORIGINS` | Allowed frontend origins (comma-separated) |
-| `TEST_DATABASE_URL` | Optional; override test DB (e.g. Postgres) |
+| `TEST_DATABASE_URL` | **Recommended for pytest** — PostgreSQL URL (`postgresql+asyncpg://...`) for a dedicated test database |
 
 ## Where to Put New Code
 

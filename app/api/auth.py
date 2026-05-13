@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
@@ -40,3 +40,9 @@ async def refresh(body: RefreshBody):
 @router.get("/me", response_model=UserResponse)
 async def me(current_user: User = Depends(get_current_user)):
     return await me_service(current_user=current_user)
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout():
+    """JWT is stateless; clients discard tokens. Hook for future server-side revocation."""
+    return None

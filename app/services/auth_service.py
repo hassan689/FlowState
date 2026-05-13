@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,6 +36,8 @@ async def login(db: AsyncSession, body: LoginRequest) -> Token:
     user = result.scalar_one_or_none()
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    user.last_active = datetime.now(timezone.utc)
+    await db.commit()
     return Token(
         access_token=create_access_token(user.id),
         refresh_token=create_refresh_token(user.id),

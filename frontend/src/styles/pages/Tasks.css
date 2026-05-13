@@ -152,3 +152,134 @@
   color: var(--text-secondary);
   font-size: 15px;
 }
+
+.tasks-error {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.filter-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: var(--text-secondary);
+  gap: 6px;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 14px;
+  min-width: 140px;
+}
+
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.task-card h3 {
+  margin: 8px 0;
+  font-size: 18px;
+}
+
+.task-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.prio-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.prio-low {
+  background: #e5e7eb;
+  color: #374151;
+}
+.prio-medium {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.prio-high {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.task-cat {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.task-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.btn-outline {
+  border: 1px solid var(--border-color);
+  background: #fff;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+.btn-danger {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+[data-adaptive='hesitation'] .tasks-grid .task-card:nth-of-type(n + 2) {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .tasks-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+  }
+
+  .filter-dropdowns {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+}

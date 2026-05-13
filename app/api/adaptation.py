@@ -4,7 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.adaptation import AdaptiveRuleResponse, ProgressTrackerResponse
+from app.schemas.adaptation import (
+    AdaptiveRuleResponse,
+    DailyProgressRow,
+    ProgressDetailResponse,
+    ProgressTrackerResponse,
+    RecoverySuggestionResponse,
+)
+from app.schemas.recommendation import RecommendationRequest, RecommendationResponse
+from app.schemas.task import TaskResponse
 from app.services.adaptation_service import (
     get_my_progress as get_my_progress_service,
 )
@@ -14,6 +22,8 @@ from app.services.adaptation_service import (
 from app.services.adaptation_service import (
     list_adaptive_rules as list_adaptive_rules_service,
 )
+from app.services.progress_service import get_progress_detail, get_recovery_suggestions
+from app.services.recommendation_service import recommend_task as recommend_task_service
 
 router = APIRouter()
 
@@ -34,6 +44,57 @@ async def get_my_progress(
     db: AsyncSession = Depends(get_db),
 ):
     return await get_my_progress_service(db=db, current_user=current_user)
+
+
+@router.get("/progress/summary", response_model=ProgressDetailResponse)
+async def progress_summary(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    raw = await get_progress_detail(db=db, user=current_user)
+    daily = [DailyProgressRow(**row) for row in raw["daily_completed"]]
+    return ProgressDetailResponse(
+        completion_rate_7d=raw["completion_rate_7d"],
+        streak_days=raw["streak_days"],
+        total_tasks=raw["total_tasks"],
+        tasks_completed_7d=raw["tasks_completed_7d"],
+        tasks_completed_all=raw["tasks_completed_all"],
+        daily_completed=daily,
+    )
+
+
+@router.get("/recovery-suggestions", response_model=RecoverySuggestionResponse)
+async def recovery_suggestions(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    raw = await get_recovery_suggestions(db=db, user=current_user)
+    st = raw["suggested_task"]
+    return RecoverySuggestionResponse(
+        show_recovery=raw["show_recovery"],
+        minutes_inactive=raw["minutes_inactive"],
+        message=raw["message"],
+        suggested_task=TaskResponse.model_validate(st) if st else None,
+    )
+
+
+@router.post("/recommendations", response_model=RecommendationResponse)
+async def recommendations(
+    body: RecommendationRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    task, reason = await recommend_task_service(
+        db=db,
+        user=current_user,
+        interaction_state=body.interaction_state,
+        last_task_id=body.last_task_id,
+        pending_task_count=body.pending_task_count,
+    )
+    return RecommendationResponse(
+        task=TaskResponse.model_validate(task) if task else None,
+        reason=reason,
+    )
 
 
 @router.get("/productivity-score")

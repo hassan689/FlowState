@@ -23,6 +23,8 @@ async def test_create_task(client: AsyncClient, test_user: User):
     assert data["title"] == "Math assignment"
     assert data["category"] == "Assignment"
     assert data["status"] == "To Do"
+    assert data["priority"] == "medium"
+    assert "time_estimate_minutes" in data
 
 
 @pytest.mark.asyncio

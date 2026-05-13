@@ -1,6 +1,9 @@
 from datetime import datetime
 from uuid import UUID
+
 from pydantic import BaseModel
+
+from app.schemas.task import TaskResponse
 
 
 class AdaptiveRuleResponse(BaseModel):
@@ -29,3 +32,24 @@ class ProgressTrackerResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class DailyProgressRow(BaseModel):
+    date: str
+    completed_count: int
+
+
+class ProgressDetailResponse(BaseModel):
+    completion_rate_7d: float
+    streak_days: int
+    total_tasks: int
+    tasks_completed_7d: int
+    tasks_completed_all: int
+    daily_completed: list[DailyProgressRow]
+
+
+class RecoverySuggestionResponse(BaseModel):
+    show_recovery: bool
+    minutes_inactive: float | None = None
+    message: str = ""
+    suggested_task: TaskResponse | None = None

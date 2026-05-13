@@ -214,3 +214,16 @@
   color: #3B82F6;
   font-weight: bold;
 }
+
+.create-task-error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+@media (min-width: 900px) {
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    align-items: start;
+  }
+}

@@ -1,0 +1,129 @@
+/* Adaptive UI chrome (behavior-driven) */
+[data-adaptive='hesitation'] .adaptive-hide-hesitation {
+  display: none !important;
+}
+
+[data-adaptive='overload'] .adaptive-overload-banner {
+  display: flex !important;
+}
+
+[data-adaptive='distraction'] .adaptive-hide-on-distraction {
+  display: none !important;
+}
+
+[data-adaptive='distraction'] .main-content {
+  padding-top: 8px;
+}
+
+.adaptive-overload-banner {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.adaptive-distraction-reminder {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 10px 16px;
+  background: #1e293b;
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+[data-adaptive='distraction'] .adaptive-distraction-reminder {
+  display: block;
+}
+
+/* Responsive shell */
+@media (max-width: 768px) {
+  .sidebar-desktop {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 16px 16px 88px;
+    width: 100%;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
+.focus-route .sidebar-desktop,
+.focus-route .bottom-nav,
+.focus-route .adaptive-overload-banner,
+.focus-route .adaptive-distraction-reminder,
+.focus-route .recommendation-banner,
+.focus-route .recovery-panel {
+  display: none !important;
+}
+
+.focus-route .main-content {
+  padding: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.auth-loading-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+}
+
+.recommendation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rec-title {
+  font-weight: 600;
+  margin-top: 4px;
+  color: var(--text-primary);
+}
+
+.rec-reason.subtle,
+.subtle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.recovery-panel {
+  margin-bottom: 20px;
+}
+
+.recovery-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: var(--text-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}

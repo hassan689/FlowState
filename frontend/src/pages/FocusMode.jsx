@@ -1,54 +1,96 @@
-import React from 'react';
-import { Target, Clock, Play, CheckCircle2 } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Target, Clock, Play, Square, ArrowLeft } from 'lucide-react';
 import '../styles/pages/FocusMode.css';
 
-const FocusMode = () => {
+const POMO_DEFAULT = 25 * 60;
+
+function formatMmSs(totalSec) {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+export default function FocusMode() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const task = location.state?.task || null;
+  const [secondsLeft, setSecondsLeft] = useState(POMO_DEFAULT);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    if (task?.id) {
+      localStorage.setItem('flowstate_last_task_id', task.id);
+    }
+  }, [task]);
+
+  useEffect(() => {
+    if (!running) return undefined;
+    const id = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          setRunning(false);
+          return POMO_DEFAULT;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  const label = useMemo(() => formatMmSs(secondsLeft), [secondsLeft]);
+
   return (
-    <div className="focus-mode-page">
+    <div className="focus-mode-page focus-minimal">
+      <button type="button" className="focus-exit adaptive-hide-on-distraction" onClick={() => navigate('/dashboard')}>
+        <ArrowLeft size={18} /> Exit focus
+      </button>
+
       <header className="focus-header">
         <div className="icon-wrapper">
           <Target size={24} color="#ffffff" className="focus-icon" />
         </div>
-        <h1>Focus Mode</h1>
-        <p>Eliminate distractions and get in the zone</p>
+        <h1>Focus mode</h1>
+        <p>One task, one timer, minimal distractions.</p>
       </header>
 
       <div className="focus-content">
         <div className="timer-card card">
-          <div className="timer-progress-bar"></div>
           <div className="timer-display">
-            <h1 className="time-text">25:00</h1>
+            <h1 className="time-text">{label}</h1>
             <div className="timer-status">
               <Clock size={16} />
-              <span>Ready to start</span>
+              <span>{running ? 'Focusing' : 'Ready'}</span>
             </div>
-            <button className="btn-start-focus">
-              <Play size={16} fill="currentColor" />
-              Start Focus
-            </button>
+            <div className="focus-actions-row">
+              <button type="button" className="btn-start-focus" onClick={() => setRunning((r) => !r)}>
+                <Play size={16} fill="currentColor" />
+                {running ? 'Pause' : 'Start'}
+              </button>
+              <button type="button" className="btn-reset-focus" onClick={() => { setRunning(false); setSecondsLeft(POMO_DEFAULT); }}>
+                <Square size={16} />
+                Reset
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="tasks-completed-card card">
-          <div className="completed-icon-wrapper">
-            <CheckCircle2 size={48} strokeWidth={2.5} color="#10B981" />
+        {task ? (
+          <div className="focus-task-card card">
+            <h2>Current task</h2>
+            <p className="focus-task-title">{task.title}</p>
+            <p className="focus-task-meta">
+              {task.priority} priority · {task.category}
+              {task.deadline && <> · due {new Date(task.deadline).toLocaleString()}</>}
+            </p>
           </div>
-          <h2>All tasks completed!</h2>
-          <p>Great work! Take a break or create new tasks.</p>
-        </div>
-
-        <div className="focus-tips-card">
-          <h2>Focus Tips</h2>
-          <ul className="tips-list">
-            <li>Eliminate all distractions - close unnecessary tabs and apps</li>
-            <li>Take short breaks between focus sessions</li>
-            <li>Use fullscreen mode for maximum concentration</li>
-            <li>Start with your highest priority tasks first</li>
-          </ul>
-        </div>
+        ) : (
+          <div className="tasks-completed-card card">
+            <h2>No task selected</h2>
+            <p>Pick a recommendation from the dashboard or open a task from the list.</p>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default FocusMode;
+}

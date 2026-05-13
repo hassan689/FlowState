@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Text, Integer, Float, ForeignKey, Enum, func
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import relationship
 import enum
 
@@ -13,6 +13,7 @@ class TaskCategory(str, enum.Enum):
     EXAM = "Exam"
     PROJECT = "Project"
     READING = "Reading"
+    OTHER = "Other"
 
 
 class TaskStatus(str, enum.Enum):
@@ -29,8 +30,10 @@ class Task(Base):
     title = Column(String(500), nullable=False)
     description = Column(Text, nullable=True)
     deadline = Column(DateTime(timezone=True), nullable=True)
-    category = Column(String(50), nullable=False)  # Assignment/Exam/Project/Reading
+    category = Column(String(50), nullable=False)  # Assignment/Exam/Project/Reading/Other
+    priority = Column(String(20), default="medium", nullable=False)  # low / medium / high
     priority_score = Column(Float, default=0.0, nullable=False)
+    time_estimate_minutes = Column(Integer, default=30, nullable=False)
     status = Column(String(20), default=TaskStatus.TO_DO.value, nullable=False)
     estimated_effort = Column(Integer, default=0, nullable=False)  # hours
     actual_time_spent = Column(Integer, default=0, nullable=False)  # minutes
@@ -44,19 +47,23 @@ class Task(Base):
 
     def compute_priority_score(self):
         from datetime import datetime, timezone
+
         if not self.deadline:
-            self.priority_score = 0.5
-            return
-        now = datetime.now(timezone.utc)
-        delta = (self.deadline - now).total_seconds() / 3600  # hours
-        if delta <= 0:
-            self.priority_score = 1.0
-        elif delta < 24:
-            self.priority_score = 0.9
-        elif delta < 72:
-            self.priority_score = 0.7
+            base = 0.5
         else:
-            self.priority_score = max(0.3, 0.7 - (delta / 168) * 0.3)  # decay over weeks
+            now = datetime.now(timezone.utc)
+            delta = (self.deadline - now).total_seconds() / 3600  # hours
+            if delta <= 0:
+                base = 1.0
+            elif delta < 24:
+                base = 0.9
+            elif delta < 72:
+                base = 0.7
+            else:
+                base = max(0.3, 0.7 - (delta / 168) * 0.3)  # decay over weeks
+        label = (self.priority or "medium").lower()
+        adj = {"low": -0.08, "medium": 0.0, "high": 0.12}
+        self.priority_score = min(1.0, max(0.05, base + adj.get(label, 0.0)))
 
     def time_until_deadline(self):
         if not self.deadline:

@@ -32,10 +32,18 @@ router = APIRouter()
 @router.get("", response_model=list[TaskResponse])
 async def list_tasks(
     status_filter: str | None = Query(None, alias="status"),
+    category: str | None = Query(None, description="Filter by category"),
+    priority: str | None = Query(None, description="Filter by priority: low | medium | high"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    return await list_tasks_service(db=db, current_user=current_user, status_filter=status_filter)
+    return await list_tasks_service(
+        db=db,
+        current_user=current_user,
+        status_filter=status_filter,
+        category_filter=category,
+        priority_filter=priority,
+    )
 
 
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

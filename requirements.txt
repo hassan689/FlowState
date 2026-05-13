@@ -11,10 +11,13 @@ alembic>=1.13.0
 # Auth
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+# passlib 1.7.x expects bcrypt<4.2 (no __about__); newer bcrypt breaks verify/hashing at runtime
+bcrypt>=4.0.1,<4.2.0
 
 # Config & validation
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
 
 # Caching & sessions
 redis>=5.0.0
@@ -38,7 +41,6 @@ pytest-cov>=4.1.0
 httpx>=0.26.0
 factory-boy>=3.3.0
 faker>=22.0.0
-aiosqlite>=0.19.0
 
 # Dev: formatting & linting
 ruff>=0.1.0

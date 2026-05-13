@@ -180,3 +180,10 @@
   color: var(--text-secondary);
   margin-top: 12px;
 }
+
+.auth-error {
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}

@@ -175,3 +175,44 @@
   color: #3B82F6;
   font-weight: bold;
 }
+
+.focus-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: #f3f4f6;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.focus-actions-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.btn-reset-focus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background: #e5e7eb;
+  font-weight: 600;
+}
+
+.focus-task-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.focus-task-meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+}

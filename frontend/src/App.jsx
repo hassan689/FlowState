@@ -11,6 +11,7 @@ import VoiceAssistant from './pages/VoiceAssistant';
 import Unstuck from './pages/Unstuck';
 import Feedback from './pages/Feedback';
 import Auth from './pages/Auth';
+import ProtectedRoute from './components/ProtectedRoute';
 import './styles/index.css';
 
 function App() {
@@ -19,20 +20,26 @@ function App() {
       <Routes>
         <Route path="/login" element={<Auth mode="login" />} />
         <Route path="/signup" element={<Auth mode="signup" />} />
-        
-        {/* Main Dashboard Routes */}
-        <Route path="/" element={<DashboardLayout />}>
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="progress" element={<ProgressDashboard />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="create-task" element={<CreateTask />} />
+          <Route path="edit-task/:taskId" element={<CreateTask />} />
           <Route path="focus" element={<FocusMode />} />
           <Route path="settings" element={<Settings />} />
           <Route path="voice-assistant" element={<VoiceAssistant />} />
           <Route path="unstuck" element={<Unstuck />} />
           <Route path="feedback" element={<Feedback />} />
-          {/* Add more routes here like /dashboard, etc. */}
         </Route>
       </Routes>
     </Router>

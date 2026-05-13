@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import Column, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY, INTEGER
+from sqlalchemy.dialects.postgresql import UUID, ARRAY, INTEGER
 from sqlalchemy.orm import DeclarativeBase
 
 

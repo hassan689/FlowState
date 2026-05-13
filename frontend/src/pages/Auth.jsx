@@ -1,13 +1,43 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/pages/Auth.css';
 
-const Auth = ({ mode = 'login' }) => {
+export default function Auth({ mode = 'login' }) {
   const isLogin = mode === 'login';
   const navigate = useNavigate();
+  const { login, register } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleToggle = (newMode) => {
-    navigate(`/${newMode}`);
+    navigate(newMode === 'login' ? '/login' : '/signup');
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!isLogin && password !== confirm) {
+      setError('Passwords do not match.');
+      return;
+    }
+    setLoading(true);
+    try {
+      if (isLogin) {
+        await login(email, password);
+      } else {
+        await register(name, email, password);
+      }
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Request failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -15,102 +45,62 @@ const Auth = ({ mode = 'login' }) => {
       <div className="auth-card">
         <div className="auth-left">
           <div className="auth-branding">
-            <h1>Welcome to Adaptive</h1>
-            <p>Your intelligent study companion that adapts to your learning style and helps you achieve academic excellence.</p>
-            
-            <div className="feature-list">
-              <div className="feature">
-                <h3>Personalized Learning</h3>
-                <p>AI-powered study plans tailored to your needs</p>
-              </div>
-              <div className="feature">
-                <h3>Track Progress</h3>
-                <p>Visualize your learning journey with detailed analytics</p>
-              </div>
-              <div className="feature">
-                <h3>Smart Scheduling</h3>
-                <p>Optimize your study time with intelligent reminders</p>
-              </div>
-            </div>
+            <h1>Adaptive Academic Task Manager</h1>
+            <p>Flowstate adapts the interface when you hesitate, overload, or switch context — so you can finish what matters.</p>
           </div>
-          
           <div className="branding-image">
-            {/* The desk image with plants matching the design block */}
-            <div className="image-placeholder"></div>
+            <div className="image-placeholder" />
           </div>
         </div>
-        
+
         <div className="auth-right">
           <div className="auth-header">
-            <h2>Adaptive</h2>
-            <p>Study Management system</p>
+            <h2>AdaptiveFlow</h2>
+            <p>Sign in to sync tasks and preferences</p>
           </div>
-          
+
           <div className="auth-toggle">
-            <button 
-              className={`toggle-btn ${isLogin ? 'active' : ''}`}
-              onClick={() => handleToggle('login')}
-            >
+            <button type="button" className={`toggle-btn ${isLogin ? 'active' : ''}`} onClick={() => handleToggle('login')}>
               Login
             </button>
-            <button 
-              className={`toggle-btn ${!isLogin ? 'active' : ''}`}
-              onClick={() => handleToggle('signup')}
-            >
+            <button type="button" className={`toggle-btn ${!isLogin ? 'active' : ''}`} onClick={() => handleToggle('signup')}>
               Sign Up
             </button>
           </div>
-          
-          <form className="auth-form" onSubmit={(e) => { e.preventDefault(); navigate('/progress'); }}>
+
+          {error && <p className="auth-error">{error}</p>}
+
+          <form className="auth-form" onSubmit={onSubmit}>
             {!isLogin && (
               <div className="form-group">
-                <label>Full Name</label>
-                <input type="text" placeholder="John Doe" />
+                <label>Full name</label>
+                <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" />
               </div>
             )}
-            
             <div className="form-group">
-              <label>Email Address</label>
-              <input type="email" placeholder="you@example.com" />
+              <label>Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@school.edu" />
             </div>
-            
             <div className="form-group">
               <label>Password</label>
-              <input type="password" placeholder="••••••••••••" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
             </div>
-            
             {!isLogin && (
               <div className="form-group">
-                <label>Confirm Password</label>
-                <input type="password" placeholder="••••••••••••" />
+                <label>Confirm password</label>
+                <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} />
               </div>
             )}
-            
-            {isLogin && (
-              <div className="form-options">
-                <label className="checkbox-label">
-                  <input type="checkbox" />
-                  <span className="checkmark"></span>
-                  Remember me
-                </label>
-                <a href="#" className="forgot-link">Forgot password</a>
-              </div>
-            )}
-            
-            <button className="submit-btn" type="submit">
-              {isLogin ? 'Login' : 'Create Account'}
+            <button className="submit-btn" type="submit" disabled={loading}>
+              {loading ? 'Please wait…' : isLogin ? 'Login' : 'Create account'}
             </button>
-            
-            {!isLogin && (
-              <p className="terms-text">
-                By signing up, you agree to our <strong>Terms and Privacy Policy.</strong>
-              </p>
-            )}
+            <p className="terms-text">
+              By continuing you agree to the product terms for class / demo use.{' '}
+              <Link to="/login">Already have an account?</Link>
+            </p>
           </form>
         </div>
       </div>
     </div>
   );
-};
-
-export default Auth;
+}

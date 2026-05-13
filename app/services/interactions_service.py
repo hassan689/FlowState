@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +17,7 @@ async def create_interaction(db: AsyncSession, current_user: User, body) -> Inte
         element_id=body.element_id,
         time_spent_ms=body.time_spent_ms,
     )
+    current_user.last_active = datetime.now(timezone.utc)
     db.add(log)
     await db.commit()
     await db.refresh(log)
