@@ -1,0 +1,2 @@
+user_id,window_end_utc,events_24h,hesitation_ratio,overload_ratio,idle_ratio,interaction_state_ratio,page_view_ratio,avg_time_spent_ms,focus_sessions_7d,avg_focus_duration_min,avg_focus_interruptions,completed_tasks_count,avg_actual_over_estimate_ratio,heuristic_label,cognitive_state
+00000000-0000-4000-8000-000000000002,2026-01-15T23:59:59+00:00,42,0.12,0.05,0.08,0.15,0.45,850.0,3,25.0,1.2,12,1.05,focused,focused

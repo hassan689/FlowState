@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import PageOutlet from '../components/PageOutlet';
 import BottomNav from '../components/BottomNav';
 import RecommendationBanner from '../components/RecommendationBanner';
 import RecoveryPanel from '../components/RecoveryPanel';
@@ -62,7 +63,7 @@ export default function DashboardLayout() {
             navigate('/focus', { state: { task } });
           }}
         />
-        <Outlet />
+        <PageOutlet />
       </main>
       <BottomNav />
     </div>

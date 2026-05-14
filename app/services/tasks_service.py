@@ -24,21 +24,43 @@ async def list_tasks(
     return list(result.scalars().all())
 
 
-async def create_task(db: AsyncSession, current_user: User, body) -> Task:
+async def create_task(
+    db: AsyncSession,
+    current_user: User,
+    body,
+    *,
+    predict_effort: bool = False,
+) -> Task:
     prio = (body.priority or "medium").lower()
     if prio not in ("low", "medium", "high"):
         prio = "medium"
+    effective = body
+    if predict_effort:
+        from app.services.ai_service import get_ai_service
+
+        pred = await get_ai_service().predict_effort_for_new_task(
+            db,
+            current_user.id,
+            category=body.category,
+            priority=prio,
+        )
+        effective = body.model_copy(
+            update={
+                "time_estimate_minutes": pred.time_estimate_minutes,
+                "estimated_effort": pred.estimated_effort_hours,
+            }
+        )
     task = Task(
         user_id=current_user.id,
-        title=body.title,
-        description=body.description,
-        deadline=body.deadline,
-        category=body.category,
+        title=effective.title,
+        description=effective.description,
+        deadline=effective.deadline,
+        category=effective.category,
         priority=prio,
-        estimated_effort=body.estimated_effort,
-        time_estimate_minutes=getattr(body, "time_estimate_minutes", None) or 30,
-        order_index=body.order_index,
-        tags=body.tags or [],
+        estimated_effort=effective.estimated_effort,
+        time_estimate_minutes=getattr(effective, "time_estimate_minutes", None) or 30,
+        order_index=effective.order_index,
+        tags=effective.tags or [],
     )
     task.compute_priority_score()
     db.add(task)

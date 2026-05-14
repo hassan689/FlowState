@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_ML_MODEL_DIR = Path(__file__).resolve().parent.parent / "ml" / "models"
 
 
 class Settings(BaseSettings):
@@ -10,6 +14,10 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://flowstate:password@localhost:5432/flowstate"
+
+    # ML artifacts (train with python -m app.ml.training.train_state)
+    ML_STATE_MODEL_PATH: str = str(_ML_MODEL_DIR / "state_classifier.joblib")
+    ML_EFFORT_MODEL_PATH: str = str(_ML_MODEL_DIR / "effort_regressor.joblib")
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

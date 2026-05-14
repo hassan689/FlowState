@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { apiFetch, clearTokens, getAccessToken, setTokens } from '../api/client';
+import { applyThemePreference } from '../lib/theme';
 
 const AuthContext = createContext(null);
 
@@ -26,6 +27,19 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     loadMe();
   }, [loadMe]);
+
+  useEffect(() => {
+    if (!user) {
+      applyThemePreference('light');
+      return;
+    }
+    const pref = user.study_preferences?.theme;
+    if (pref === 'dark' || pref === 'light' || pref === 'system') {
+      applyThemePreference(pref);
+    } else {
+      applyThemePreference('light');
+    }
+  }, [user]);
 
   const login = useCallback(async (email, password) => {
     const res = await apiFetch('/api/auth/login', { method: 'POST', body: { email, password } });

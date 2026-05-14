@@ -4,9 +4,13 @@ import {
   User,
   Palette,
   Zap,
+  Sun,
+  Moon,
+  Monitor,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../api/client';
+import { applyThemePreference } from '../lib/theme';
 import '../styles/pages/Settings.css';
 
 export default function Settings() {
@@ -21,9 +25,15 @@ export default function Settings() {
     if (!user) return;
     setName(user.name || '');
     const p = user.study_preferences || {};
-    setTheme(p.theme || 'light');
+    const t = p.theme === 'dark' || p.theme === 'light' || p.theme === 'system' ? p.theme : 'light';
+    setTheme(t);
     setFocusDefault(Boolean(p.focus_mode_default));
   }, [user]);
+
+  const setThemeChoice = (value) => {
+    setTheme(value);
+    applyThemePreference(value);
+  };
 
   const saveProfile = async (e) => {
     e.preventDefault();
@@ -41,7 +51,7 @@ export default function Settings() {
       });
       if (!res.ok) throw new Error('Could not save profile');
       await refreshUser();
-      document.documentElement.dataset.theme = theme;
+      applyThemePreference(theme);
       setMsg('Saved.');
     } catch (err) {
       setMsg(err.message || 'Save failed');
@@ -89,18 +99,46 @@ export default function Settings() {
           <div className="section-header">
             <Palette size={18} className="section-icon" />
             <div className="section-title-wrapper">
-              <h2>Study preferences</h2>
-              <p>Stored as JSON on the server (`study_preferences`)</p>
+              <h2>Appearance</h2>
+              <p>Dark mode, light mode, or follow your device setting. Save to keep across sessions.</p>
             </div>
           </div>
           <div className="settings-list">
             <div className="setting-item column">
               <label className="setting-label">Theme</label>
-              <select className="setting-input" value={theme} onChange={(e) => setTheme(e.target.value)}>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="system">System</option>
-              </select>
+              <div className="theme-segmented" role="radiogroup" aria-label="Color theme">
+                <button
+                  type="button"
+                  className={`theme-segment-btn ${theme === 'light' ? 'theme-segment-btn--active' : ''}`}
+                  onClick={() => setThemeChoice('light')}
+                  aria-checked={theme === 'light'}
+                  role="radio"
+                >
+                  <Sun size={18} aria-hidden />
+                  Light
+                </button>
+                <button
+                  type="button"
+                  className={`theme-segment-btn ${theme === 'dark' ? 'theme-segment-btn--active' : ''}`}
+                  onClick={() => setThemeChoice('dark')}
+                  aria-checked={theme === 'dark'}
+                  role="radio"
+                >
+                  <Moon size={18} aria-hidden />
+                  Dark
+                </button>
+                <button
+                  type="button"
+                  className={`theme-segment-btn ${theme === 'system' ? 'theme-segment-btn--active' : ''}`}
+                  onClick={() => setThemeChoice('system')}
+                  aria-checked={theme === 'system'}
+                  role="radio"
+                >
+                  <Monitor size={18} aria-hidden />
+                  System
+                </button>
+              </div>
+              <p className="theme-hint">Changes apply right away; save your profile so the same theme loads on your next visit.</p>
             </div>
             <div className="setting-item">
               <div className="setting-info">

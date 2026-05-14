@@ -22,6 +22,16 @@
 
   --border-color: #e5e7eb;
 
+  /* Nested surfaces (rows, inputs, secondary buttons) — tuned per theme in theme-dark.css */
+  --surface-inset: #f3f4f6;
+  --surface-inset-hover: #e5e7eb;
+  --surface-input: #f3f4f6;
+  --surface-input-hover: #e5e7eb;
+  --progress-track: #e5e7eb;
+  --pill-secondary-bg: #eef2ff;
+  --pill-secondary-text: #1d4ed8;
+  --btn-outline-bg: #ffffff;
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -31,6 +41,15 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
   --shadow-blue: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+
+  /* Motion — used across layout, nav, and page shells */
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-smooth: cubic-bezier(0.45, 0, 0.55, 1);
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+  --duration-page: 300ms;
 }
 
 * {
@@ -60,7 +79,12 @@ button {
   cursor: pointer;
   border: none;
   background: none;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-fast) var(--ease-in-out-smooth),
+    transform var(--duration-fast) var(--ease-out-smooth),
+    opacity var(--duration-fast) var(--ease-in-out-smooth),
+    box-shadow var(--duration-normal) var(--ease-out-smooth);
 }
 
 /* Typography Utilities */
@@ -88,6 +112,37 @@ p {
   overflow-y: auto;
   padding: 32px;
   background-color: var(--bg-color);
+  scroll-behavior: smooth;
+}
+
+/* Routed page content — remounts per path via key on PageOutlet */
+.page-transition-shell {
+  animation: pageEnter var(--duration-page) var(--ease-out-smooth) both;
+}
+
+.focus-route .page-transition-shell {
+  animation-duration: 200ms;
+  animation-name: pageEnterFocus;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageEnterFocus {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Card */
@@ -97,7 +152,11 @@ p {
   padding: 24px;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform var(--duration-normal) var(--ease-out-smooth),
+    box-shadow var(--duration-normal) var(--ease-out-smooth),
+    border-color var(--duration-fast) var(--ease-in-out-smooth),
+    background-color var(--duration-normal) var(--ease-in-out-smooth);
 }
 
 .card:hover {
@@ -115,7 +174,12 @@ p {
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-fast) var(--ease-in-out-smooth),
+    box-shadow var(--duration-normal) var(--ease-out-smooth),
+    transform var(--duration-fast) var(--ease-out-smooth),
+    opacity var(--duration-fast) var(--ease-in-out-smooth);
 }
 
 .btn-primary {
@@ -176,5 +240,29 @@ p {
 @media (max-width: 768px) {
   .auth-left {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-content {
+    scroll-behavior: auto;
+  }
+
+  .focus-route .page-transition-shell,
+  .page-transition-shell {
+    animation: none;
+  }
+
+  .card:hover,
+  .btn-primary:hover {
+    transform: none;
+  }
+
+  .nav-item:hover {
+    transform: none;
+  }
+
+  .bottom-nav-item:active {
+    transform: none;
   }
 }

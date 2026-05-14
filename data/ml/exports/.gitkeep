@@ -1,0 +1,2 @@
+# Generated CSVs (gitignored). Run from repo root:
+#   python scripts/export_ml_datasets.py

@@ -2,6 +2,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.schemas.adaptive_ml import AdaptiveAction, CognitiveStatePrediction
 from app.schemas.task import TaskResponse
 
 
@@ -14,3 +15,5 @@ class RecommendationRequest(BaseModel):
 class RecommendationResponse(BaseModel):
     task: TaskResponse | None = None
     reason: str = ""
+    cognitive_state: CognitiveStatePrediction | None = None
+    suggested_action: AdaptiveAction | None = None

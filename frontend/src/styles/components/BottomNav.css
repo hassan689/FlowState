@@ -31,6 +31,14 @@
   color: var(--sidebar-text);
   border-radius: var(--radius-sm);
   min-width: 0;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-fast) var(--ease-in-out-smooth),
+    transform var(--duration-fast) var(--ease-out-smooth);
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.97);
 }
 
 .bottom-nav-item span {
