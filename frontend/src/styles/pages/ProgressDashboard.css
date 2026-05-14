@@ -30,7 +30,7 @@
 }
 
 .kpi-card {
-  background: white;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 16px;
@@ -52,6 +52,7 @@
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
 .kpi-label {
@@ -66,7 +67,7 @@
 }
 
 .chart-card {
-  background: white;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 24px;
@@ -78,6 +79,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--text-primary);
 }
 
 .empty-state {
@@ -98,6 +100,7 @@
 
 .achievements-header h3 {
   font-size: 16px;
+  color: var(--text-primary);
 }
 
 .achievements-grid {
@@ -113,11 +116,11 @@
   padding: 16px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background: #f9fafb;
+  background: var(--surface-inset);
 }
 
 .ach-icon {
-  background: #e5e7eb;
+  background: var(--progress-track);
   padding: 10px;
   border-radius: 50%;
   color: var(--text-muted);
@@ -126,6 +129,7 @@
 .ach-text h4 {
   font-size: 14px;
   margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
 .ach-text p {
@@ -134,7 +138,7 @@
 }
 
 .cta-section {
-  background: #eef2ff;
+  background: var(--pill-secondary-bg);
   border-radius: var(--radius-lg);
   padding: 32px;
   text-align: center;
@@ -159,6 +163,7 @@
 .cta-section h2 {
   font-size: 18px;
   margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .cta-section p {

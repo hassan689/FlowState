@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,7 +25,10 @@ from app.services.adaptation_service import (
     list_adaptive_rules as list_adaptive_rules_service,
 )
 from app.services.progress_service import get_progress_detail, get_recovery_suggestions
+from app.services.ai_service import get_ai_service
 from app.services.recommendation_service import recommend_task as recommend_task_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -91,10 +96,25 @@ async def recommendations(
         last_task_id=body.last_task_id,
         pending_task_count=body.pending_task_count,
     )
-    return RecommendationResponse(
-        task=TaskResponse.model_validate(task) if task else None,
-        reason=reason,
-    )
+    try:
+        snap = await get_ai_service().build_snapshot(
+            db,
+            current_user.id,
+            pending_task_count=body.pending_task_count,
+            client_reported_state=body.interaction_state,
+        )
+        return RecommendationResponse(
+            task=TaskResponse.model_validate(task) if task else None,
+            reason=reason,
+            cognitive_state=snap.cognitive_state,
+            suggested_action=snap.suggested_action,
+        )
+    except Exception:
+        logger.warning("ML enrichment for recommendations failed", exc_info=True)
+        return RecommendationResponse(
+            task=TaskResponse.model_validate(task) if task else None,
+            reason=reason,
+        )
 
 
 @router.get("/productivity-score")

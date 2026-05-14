@@ -24,13 +24,16 @@ async def create_interaction(db: AsyncSession, current_user: User, body) -> Inte
     return log
 
 
-async def list_interactions(db: AsyncSession, current_user: User, limit: int) -> list[InteractionLog]:
-    stmt = (
-        select(InteractionLog)
-        .where(InteractionLog.user_id == current_user.id)
-        .order_by(desc(InteractionLog.timestamp))
-        .limit(limit)
-    )
+async def list_interactions(
+    db: AsyncSession,
+    current_user: User,
+    limit: int,
+    event_type: str | None = None,
+) -> list[InteractionLog]:
+    stmt = select(InteractionLog).where(InteractionLog.user_id == current_user.id)
+    if event_type:
+        stmt = stmt.where(InteractionLog.event_type == event_type)
+    stmt = stmt.order_by(desc(InteractionLog.timestamp)).limit(limit)
     result = await db.execute(stmt)
     return list(result.scalars().all())
 

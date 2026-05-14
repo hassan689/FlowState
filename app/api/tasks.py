@@ -49,10 +49,19 @@ async def list_tasks(
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(
     body: TaskCreate,
+    predict_effort: bool = Query(
+        False,
+        description="If true, overwrite time_estimate_minutes and estimated_effort using ML/heuristics.",
+    ),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    return await create_task_service(db=db, current_user=current_user, body=body)
+    return await create_task_service(
+        db=db,
+        current_user=current_user,
+        body=body,
+        predict_effort=predict_effort,
+    )
 
 
 @router.get("/active", response_model=list[TaskResponse])

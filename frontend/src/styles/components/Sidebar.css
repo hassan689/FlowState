@@ -77,17 +77,22 @@
   color: var(--sidebar-text);
   font-weight: 500;
   font-size: 15px;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-normal) var(--ease-out-smooth),
+    transform var(--duration-fast) var(--ease-out-smooth);
 }
 
 .nav-item:hover {
   background-color: var(--sidebar-item-hover);
   color: #ffffff;
+  transform: translateX(2px);
 }
 
 .nav-item.active {
   background-color: var(--sidebar-item-active);
   color: var(--sidebar-text-active);
+  transform: none;
 }
 
 .sidebar-footer {
@@ -106,6 +111,10 @@
   border-radius: var(--radius-md);
   font-weight: 500;
   font-size: 14px;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-fast) var(--ease-in-out-smooth),
+    transform var(--duration-fast) var(--ease-out-smooth);
 }
 
 .voice-assistant-btn:hover {
@@ -130,6 +139,9 @@
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 14px;
+  transition:
+    background-color var(--duration-normal) var(--ease-out-smooth),
+    color var(--duration-fast) var(--ease-in-out-smooth);
 }
 
 .sidebar-logout:hover {

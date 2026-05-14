@@ -1,0 +1,2 @@
+task_id,user_id,task_created_at,category_idx,priority_idx,priority_score_proxy,user_avg_actual_minutes,user_median_actual_minutes,user_tasks_done_count,user_avg_actual_over_estimate,actual_time_spent_minutes,time_estimate_minutes_at_create,minutes_target_source
+00000000-0000-4000-8000-000000000001,00000000-0000-4000-8000-000000000002,2026-01-15T10:00:00+00:00,0,1,0.55,32.5,30.0,8,1.08,35,30,actual

@@ -299,3 +299,44 @@ input:checked + .slider:before {
 .settings-save {
   margin-top: 8px;
 }
+
+.theme-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.theme-segment-btn {
+  flex: 1;
+  min-width: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.theme-segment-btn:hover {
+  border-color: var(--primary-color);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.theme-segment-btn--active {
+  border-color: var(--primary-color);
+  background: rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.theme-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

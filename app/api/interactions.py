@@ -57,10 +57,13 @@ async def log_interaction_state(
 @router.get("", response_model=list[InteractionLogResponse])
 async def list_interactions(
     limit: int = Query(100, le=500),
+    event_type: str | None = Query(None, description="Filter by event_type, e.g. vision_metrics"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    return await list_interactions_service(db=db, current_user=current_user, limit=limit)
+    return await list_interactions_service(
+        db=db, current_user=current_user, limit=limit, event_type=event_type
+    )
 
 
 @router.get("/patterns")

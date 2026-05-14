@@ -2,12 +2,10 @@
 MASS (Flowstate) - Moment-Adaptive Study System API.
 """
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import make_asgi_app
-
-from app.api import auth, tasks, interactions, focus, adaptation, users
+from app.api import adaptation, ai, auth, focus, interactions, tasks, users
 from app.core.config import settings
 from app.db.session import init_db
 
@@ -48,6 +46,7 @@ app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
 app.include_router(interactions.router, prefix="/api/interactions", tags=["interactions"])
 app.include_router(focus.router, prefix="/api/focus", tags=["focus"])
 app.include_router(adaptation.router, prefix="/api/adaptation", tags=["adaptation"])
+app.include_router(ai.router, prefix="/api/ai", tags=["ai"])
 
 
 @app.get("/health")

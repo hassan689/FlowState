@@ -229,7 +229,7 @@ textarea.form-input {
 .help-card .btn-outline {
   width: 100%;
   padding: 10px;
-  background: white;
+  background: var(--btn-outline-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   font-weight: 600;
@@ -238,7 +238,7 @@ textarea.form-input {
 }
 
 .help-card .btn-outline:hover {
-  background: #F3F4F6;
+  background: var(--surface-inset-hover);
 }
 
 /* Responsive */
